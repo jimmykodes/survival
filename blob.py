@@ -32,10 +32,7 @@ class Blob:
 
         # history (for plotting)
         self.energy_hist = []
-
-        # for drawing
-        self.last_x = None
-        self.last_y = None
+        self.coord_hist = []
 
     @property
     def hue(self):
@@ -47,15 +44,24 @@ class Blob:
     def move(self):
         if isinstance(self.target, Food) and not self.target.edible:
             self.target = Coord()
+            if self.verbose >= 2:
+                cprint(f'Blob {self.index} was cock blocked', 'red')
         d = distance(self.x, self.y, self.target.x, self.target.y)
         if d > 0:
             r = self.speed / d if d > self.speed else 1
             self.x += (self.target.x - self.x) * r
             self.y += (self.target.y - self.y) * r
-            self.energy -= self.speed
+            self.energy -= self.speed * 2
         else:
             if isinstance(self.target, Food):
-                self.eat(self.target)
+                if self.verbose >= 2:
+                    cprint(f'Blob {self.index} eating', 'magenta')
+                if self.target.edible:
+                    self.eat(self.target)
+                else:
+                    if self.verbose >= 2:
+                        cprint(f'Blob {self.index} was cock blocked', 'red')
+                    self.target = Coord()
             if isinstance(self.target, Home):
                 if self.verbose >= 2:
                     cprint(f'Blob {self.index} made it home', 'green')
@@ -69,13 +75,13 @@ class Blob:
         food.destroy()
 
     def can_see(self, item):
-        return distance(self.x, self.y, item.x, item.y) < self.sight_distance
+        return distance(self.x, self.y, item.x, item.y) <= self.sight_distance
 
-    def die(self):
+    def die(self, reason):
         self.alive = False
         self.energy = 0
         if self.verbose >= 2:
-            cprint(f"Blob {self.index} died after {self.days_alive} days!", 'yellow')
+            cprint(f"Blob {self.index} died after {self.days_alive} days from {reason}!", 'yellow')
 
     def mutate_gene(self, gene):
         if random.random() < settings.MUTATION_CHANCE:
@@ -108,9 +114,8 @@ class Blob:
             if distance(self.x, self.y, self.home.x, self.home.y) <= self.energy - self.speed:
                 self.target = self.home
         if self.alive and not self.returned_home:
-            self.last_x = self.x
-            self.last_y = self.y
+            self.coord_hist.append(Coord(self.x, self.y))
             if self.energy > self.speed:
                 self.move()
             else:
-                self.die()
+                self.die(reason='running out of energy')

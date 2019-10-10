@@ -125,3 +125,4 @@ dmypy.json
 .pyre/
 
 *.png
+run_info.txt
