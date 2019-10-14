@@ -45,7 +45,7 @@ class Blob:
         if isinstance(self.target, Food) and not self.target.edible:
             self.target = Coord()
             if self.verbose >= 2:
-                cprint(f'Blob {self.index} was cock blocked', 'red')
+                cprint(f'Blob {self.index} was cock blocked', 'white')
         d = distance(self.x, self.y, self.target.x, self.target.y)
         if d > 0:
             r = self.speed / d if d > self.speed else 1
@@ -77,11 +77,11 @@ class Blob:
     def can_see(self, item):
         return distance(self.x, self.y, item.x, item.y) <= self.sight_distance
 
-    def die(self, reason):
+    def die(self, reason, color):
         self.alive = False
         self.energy = 0
         if self.verbose >= 2:
-            cprint(f"Blob {self.index} died after {self.days_alive} days from {reason}!", 'yellow')
+            cprint(f"Blob {self.index} died after {self.days_alive} days from {reason}!", color)
 
     def mutate_gene(self, gene):
         if random.random() < settings.MUTATION_CHANCE:
@@ -94,9 +94,9 @@ class Blob:
             cprint(f'Blob {self.index} reproducing', 'cyan')
         if self.x in [0, settings.WIDTH]:
             c_x = self.x
-            c_y = self.y + (random.random() * 3 * random.choice([1, -1]))
+            c_y = None
         else:
-            c_x = self.x + (random.random() * 3 * random.choice([1, -1]))
+            c_x = None
             c_y = self.y
         return Blob(
             x=c_x,
@@ -118,4 +118,4 @@ class Blob:
             if self.energy > self.speed:
                 self.move()
             else:
-                self.die(reason='running out of energy')
+                self.die(reason='running out of energy', color='red')
