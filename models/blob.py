@@ -4,9 +4,9 @@ import uuid
 from termcolor import cprint
 
 import settings
-from coord import Coord
-from food import Food
-from home import Home
+from models.coord import Coord
+from models.food import Food
+from models.home import Home
 from utils import distance
 
 

@@ -1,4 +1,4 @@
-from coord import Coord
+from models.coord import Coord
 
 
 class Home(Coord):

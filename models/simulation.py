@@ -9,10 +9,10 @@ import cairo
 from termcolor import cprint
 
 import settings
-from blob import Blob
-from coord import Coord
-from food import Food
-from home import Home
+from models.blob import Blob
+from models.coord import Coord
+from models.food import Food
+from models.home import Home
 from utils import sqr_mag
 
 

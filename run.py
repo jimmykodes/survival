@@ -1,4 +1,4 @@
-from simulation import Simulation
+from models.simulation import Simulation
 import multiprocessing
 
 
